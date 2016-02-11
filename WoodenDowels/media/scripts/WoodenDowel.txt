@@ -1,0 +1,37 @@
+/** ================================================ **/
+/**            Handmade Wooden Dowels                **/
+/**           mod & textures by Onkeen               **/
+/** ================================================ **/
+
+module Base
+{
+    item WoodDowel
+    {
+		CanStack            = TRUE,
+        Weight              = 0.04,
+        Type                = Normal,
+        DisplayName         = Wooden Dowel,
+        Icon                = WoodenDowel,
+    }
+
+    recipe Craft Wooden Dowels
+    {
+        Plank,
+        keep Screwdriver,
+        keep Saw,
+		
+        Result:WoodDowel=3,
+        Time:250.0,
+    }
+	
+	recipe Craft Drawer with Wooden Dowels
+	{
+		Plank,
+		WoodDowel=3,
+		Doorknob,
+
+		Result:Drawer,
+		Time:200.0,
+	}
+
+}
