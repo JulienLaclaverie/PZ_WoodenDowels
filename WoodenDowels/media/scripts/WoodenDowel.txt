@@ -7,31 +7,33 @@ module Base
 {
     item WoodDowel
     {
-		CanStack            = TRUE,
+        CanStack            = TRUE,
         Weight              = 0.04,
         Type                = Normal,
         DisplayName         = Wooden Dowel,
         Icon                = WoodenDowel,
     }
 
-    recipe Craft Wooden Dowels
+    recipe Craft wooden dowels
     {
         Plank,
-        keep Screwdriver,
+        keep Screwdriver/KitchenKnife/HuntingKnife,
         keep Saw,
-		
+        
         Result:WoodDowel=3,
         Time:250.0,
+        Category:Carpentry
     }
-	
-	recipe Craft Drawer with Wooden Dowels
-	{
-		Plank,
-		WoodDowel=3,
-		Doorknob,
+    
+    recipe Craft Drawer with wooden dowels
+    {
+        Plank,
+        WoodDowel=3,
+        Doorknob,
 
-		Result:Drawer,
-		Time:200.0,
-	}
+        Result:Drawer,
+        Time:250.0,
+        Category:Carpentry
+    }
 
 }
