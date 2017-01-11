@@ -11,29 +11,66 @@ module Base
         Weight              = 0.04,
         Type                = Normal,
         DisplayName         = Wooden Dowel,
-        Icon                = WoodenDowel,
+        Icon                = WoodenDowel
     }
 
-    recipe Craft wooden dowels
+    recipe Craft Wooden Dowels
     {
         Plank,
         keep Screwdriver/KitchenKnife/HuntingKnife,
         keep Saw,
         
         Result:WoodDowel=3,
+        Sound:PZ_Saw,
         Time:250.0,
+        SkillRequired:Woodwork=3,
+        Category:Carpentry
+    }
+
+    recipe Craft Wooden Dowel
+    {
+        TreeBranch,
+        keep Screwdriver/KitchenKnife/HuntingKnife,
+        keep Saw,
+        
+        Result:WoodDowel=1,
+        Sound:PZ_Saw,
+        Time:150.0,
+        SkillRequired:Woodwork=3,
         Category:Carpentry
     }
     
     recipe Craft Drawer with wooden dowels
     {
-        Plank,
-        WoodDowel=3,
+        Plank=2,
+        WoodDowel=6,
         Doorknob,
+        keep Hammer,
 
         Result:Drawer,
+        Sound:PZ_Hammer,
         Time:250.0,
+        SkillRequired:Woodwork=4,
+        XP:Woodwork=2,
         Category:Carpentry
+    }
+
+    multistagebuild Create Wooden Wall with Dowels
+    {
+        PreviousStage:WoodenWallFrame;MetalWallFrame,
+        Name:WoodenDowelWall,
+        TimeNeeded:350,
+        BonusHealth:200,
+        SkillRequired:Woodwork=8,
+        ItemsRequired:Base.Plank=3;Base.WoodDowel=5,
+        ItemsToKeep:Base.Hammer,
+        Sprite:walls_exterior_wooden_01_24,
+        NorthSprite:walls_exterior_wooden_01_25,
+        CanBePlastered:true,
+        WallType:wall,
+        CraftingSound:PZ_Hammer,
+        ID:Create Wooden with Dowels,
+        XP:Woodwork=40
     }
 
 }

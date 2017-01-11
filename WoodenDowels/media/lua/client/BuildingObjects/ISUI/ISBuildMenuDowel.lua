@@ -1,7 +1,8 @@
 -- ================================================ --
 --            Handmade Wooden Dowels                --
 --           mod & textures by Onkeen               --
---     Highly inspired from RJ's awesome code       --
+--         Inspired from RJ's awesome code          --
+--     Many thanks to Butterbot & Blindcoder        --
 -- ================================================ --
 
 ISBuildMenuDowel = {};
@@ -35,17 +36,18 @@ ISBuildMenuDowel.doBuildMenuDowels = function(player, context, worldobjects, tes
         end
     end
 
-    -- build menu
-    -- if we have any thing to build in our inventory
+    -- Build dowels menu if we have any thing to build in our inventory
     if ISBuildMenuDowel.haveSomethingtoBuildDowel(player) then
 
         if test then return ISWorldObjectContextMenu.setTest() end
 
         local buildOption = context:addOption("Build with dowels", worldobjects, nil);
         -- create a brand new context menu wich contain our different material (wood, stone etc.) to build
+
         local subMenu = ISContextMenu:getNew(context);
         -- We create the different option for this new menu (wood, stone etc.)
         -- check if we can build something in wood material
+
         if haveSomethingtoBuildDowelWood(player) then
             -- we add the subMenu to our current option (Build)
             context:addSubMenu(buildOption, subMenu);
@@ -56,78 +58,46 @@ ISBuildMenuDowel.doBuildMenuDowels = function(player, context, worldobjects, tes
             context:addSubMenu(wallOption, subMenuWall);
             ISBuildMenuDowel.buildWallMenu(subMenuWall, wallOption, player);
 
-            -- we add our new menu to the option we want (here door)
             ------------------ DOOR ------------------
---          local doorOption = subMenu:addOption(getText("ContextMenu_Door"), worldobjects, nil);
---          local subMenuDoor = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here door)
---          context:addSubMenu(doorOption, subMenuDoor);
             ISBuildMenuDowel.buildDoorMenu(subMenu, player);
+
             ------------------ DOOR FRAME ------------------
             ISBuildMenuDowel.buildDoorFrameMenu(subMenu, player);
---~             ----------------- WINDOWS FRAME-----------------
---          ISBuildMenuDowel.buildWindowsFrameMenu(subMenu, player);
---~             ------------------ STAIRS ------------------
---          local stairsOption = subMenu:addOption(getText("ContextMenu_Stairs"), worldobjects, nil);
---          local subMenuStairs = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here wood)
---          context:addSubMenu(stairsOption, subMenuStairs);
+
+            -------------------- STAIRS ------------------
             ISBuildMenuDowel.buildStairsMenu(subMenu, player);
---~             ------------------ FLOOR ------------------
---          local floorOption = subMenu:addOption(getText("ContextMenu_Floor"), worldobjects, nil);
---          local subMenuFloor = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here build)
---          context:addSubMenu(floorOption, subMenuFloor);
+
+            ------------------ FLOOR ------------------
             ISBuildMenuDowel.buildFloorMenu(subMenu, player);
+
             ------------------ WOODEN CRATE ------------------
             ISBuildMenuDowel.buildContainerMenu(subMenu, player);
+
             ------------------ BAR ------------------
             local barOption = subMenu:addOption(getText("ContextMenu_Bar"), worldobjects, nil);
             local subMenuBar = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here wood)
             context:addSubMenu(barOption, subMenuBar);
             ISBuildMenuDowel.buildBarMenu(subMenuBar, barOption, player);
+
             ------------------ FURNITURE ------------------
             local furnitureOption = subMenu:addOption(getText("ContextMenu_Furniture"), worldobjects, nil);
             local subMenuFurniture = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here build)
             context:addSubMenu(furnitureOption, subMenuFurniture);
             ISBuildMenuDowel.buildFurnitureMenu(subMenuFurniture, context, furnitureOption, player);
+
             ------------------ FENCE ------------------
             local fenceOption = subMenu:addOption(getText("ContextMenu_Fence"), worldobjects, nil);
             local subMenuFence = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here build)
             context:addSubMenu(fenceOption, subMenuFence);
             ISBuildMenuDowel.buildFenceMenu(subMenuFence, fenceOption, player);
+
             ------------------ LIGHT SOURCES ------------------
---            local lightOption = subMenu:addOption("Light source", worldobjects, nil);
---            local subMenuLight = subMenu:getNew(subMenu);
-            -- we add our new menu to the option we want (here build)
---            context:addSubMenu(lightOption, subMenuLight);
---            ISBuildMenuDowel.buildLightMenu(subMenu, lightOption, player);
             ISBuildMenuDowel.buildLightMenu(subMenu, player);
-        end
-    end
-
-    -- dismantle stuff
-    -- TODO: RJ: removed it for now need to see exactly how it works as now we have a proper right click to dismantle items...
---  if getSpecificPlayer(player):getInventory():contains("Saw") and getSpecificPlayer(player):getInventory():contains("Screwdriver") then
---        if test then return ISWorldObjectContextMenu.setTest() end
---      context:addOption(getText("ContextMenu_Dismantle"), worldobjects, ISBuildMenuDowel.onDismantle, getSpecificPlayer(player));
---  end
-
-    -- destroy item with sledgehammer
-    if not isClient() or getServerOptions():getBoolean("AllowDestructionBySledgehammer") then
-        local sledgehammer = getSpecificPlayer(player):getInventory():getBestCondition("Sledgehammer")
-        if sledgehammer and not sledgehammer:isBroken() then
-            if test then return ISWorldObjectContextMenu.setTest() end
-            context:addOption(getText("ContextMenu_Destroy"), worldobjects, ISWorldObjectContextMenu.onDestroy, getSpecificPlayer(player))
         end
     end
 end
 
 function ISBuildMenuDowel.haveSomethingtoBuildDowel(player)
---~     return true;
     return haveSomethingtoBuildDowelWood(player);
 end
 
@@ -142,11 +112,7 @@ function haveSomethingtoBuildDowelWood(player)
     ISBuildMenuDowel.doorknob = 0;
     ISBuildMenuDowel.hasHammer = getSpecificPlayer(player):getInventory():contains("Hammer") or getSpecificPlayer(player):getInventory():contains("HammerStone")
     if ISBuildMenuDowel.hasHammer then
-        -- most objects require a hammer
-    elseif ISBuildMenuDowel.countMaterialDowel(player, "Base.Sandbag") >= 3 or ISBuildMenuDowel.countMaterialDowel(player, "Base.Gravelbag") >= 3 then
-        -- no hammer required
-    elseif ISBuildMenuDowel.canBuildLogWall(player) then
-        -- no hammer required
+        -- all dowels objects require a hammer
     else
         return false
     end
@@ -154,54 +120,6 @@ function haveSomethingtoBuildDowelWood(player)
     ISBuildMenuDowel.WoodDowel = ISBuildMenuDowel.countMaterialDowel(player, "Base.WoodDowel")
     ISBuildMenuDowel.hinge = ISBuildMenuDowel.countMaterialDowel(player, "Base.Hinge")
     ISBuildMenuDowel.doorknob = ISBuildMenuDowel.countMaterialDowel(player, "Base.Doorknob")
-    return true;
-end
-
-ISBuildMenuDowel.onMultiStageBuild = function(worldobjects, stage, item, player)
-    local playerObj = getSpecificPlayer(player);
-    if luautils.walkAdj(playerObj, item:getSquare(), false) then
-        -- equip required items
-        local first = true;
-        for i=0,stage:getItemsToKeep():size() - 1 do
-            local itemToEquip =  stage:getItemsToKeep():get(i);
-            if not playerObj:hasEquipped(itemToEquip) and playerObj:getInventory():getItemFromType(itemToEquip) then
-                ISInventoryPaneContextMenu.equipWeapon(playerObj:getInventory():getItemFromType(itemToEquip), first, false, player)
-            end
-            if not first then
-                break;
-            end
-            first = false;
-        end
-        ISTimedActionQueue.add(ISMultiStageBuild:new(playerObj, stage, item, stage:getTimeNeeded(playerObj)));
-    end
-end
-
-ISBuildMenuDowel.canDoStage = function(player, stage)
-    local items = stage:getItemsLua();
-    for x=0,stage:getItemsToKeep():size()-1 do
-        local item = InventoryItemFactory.CreateItem(stage:getItemsToKeep():get(x));
-        if item then
-            if not player:getInventory():containsWithModule(stage:getItemsToKeep():get(x)) then
-                return false;
-            end
-        end
-    end
-    for x,v in pairs(items) do
-        local item = InventoryItemFactory.CreateItem(x);
-        if item then
-            if instanceof(item, "DrainableComboItem") then
-                local drainable = player:getInventory():getItemFromType(x);
-                local useLeft = 0;
-                if (drainable and drainable:getRemainingUses() < tonumber(v)) or not drainable then
-                    return false;
-                end
-            else
-                if player:getInventory():getItemCount(x) < tonumber(v) then
-                    return false;
-                end
-            end
-        end
-    end
     return true;
 end
 
@@ -251,7 +169,7 @@ end
 
 ISBuildMenuDowel.buildFenceMenu = function(subMenu, option, player)
     local stakeOption = subMenu:addOption(getText("ContextMenu_Wooden_Stake"), worldobjects, ISBuildMenuDowel.onWoodenFenceStake, square, player);
-    local toolTip = ISBuildMenuDowel.canBuildDowel(2,3,0,0,0,6,stakeOption, player);
+    local toolTip = ISBuildMenuDowel.canBuildDowel(2,3,0,0,0,5,stakeOption, player);
     toolTip:setName(getText("ContextMenu_Wooden_Stake"));
     toolTip.description = getText("Tooltip_craft_woodenStakeDesc") .. toolTip.description;
     toolTip:setTexture("fencing_01_19");
@@ -259,7 +177,7 @@ ISBuildMenuDowel.buildFenceMenu = function(subMenu, option, player)
 
     local woodenFenceSprite = ISBuildMenuDowel.getWoodenFenceSprites(player);
     local fenceOption = subMenu:addOption(getText("ContextMenu_Wooden_Fence"), worldobjects, ISBuildMenuDowel.onWoodenFence, square, woodenFenceSprite, player);
-    local tooltip3 = ISBuildMenuDowel.canBuildDowel(3,5,0,0,0,3,fenceOption, player);
+    local tooltip3 = ISBuildMenuDowel.canBuildDowel(3,5,0,0,0,5,fenceOption, player);
     tooltip3:setName(getText("ContextMenu_Wooden_Fence"));
     tooltip3.description = getText("Tooltip_craft_woodenFenceDesc") .. tooltip3.description;
     tooltip3:setTexture(woodenFenceSprite.sprite);
@@ -301,7 +219,7 @@ ISBuildMenuDowel.onWoodenFence = function(worldobjects, square, sprite, player)
 end
 
 -- **********************************************
--- **          *LIGHT SOURCES*                 **
+-- **            *LIGHT SOURCES*               **
 -- **********************************************
 ISBuildMenuDowel.buildLightMenu = function(subMenu, player)
     local sprite = ISBuildMenuDowel.getPillarLampSprite(player);
@@ -325,10 +243,6 @@ ISBuildMenuDowel.buildLightMenu = function(subMenu, player)
     toolTip.description = getText("ContextMenu_Lamp_on_Pillar") .. " " .. toolTip.description;
     toolTip:setTexture("carpentry_02_59");
     ISBuildMenuDowel.requireHammerDowel(lampOption)
-
---    if lampOption.notAvailable then
---        option.notAvailable = true;
---    end
 end
 
 ISBuildMenuDowel.onPillarLamp = function(worldobjects, square, sprite, player)
@@ -340,7 +254,6 @@ ISBuildMenuDowel.onPillarLamp = function(worldobjects, square, sprite, player)
     lamp.modData["need:Base.Rope"] = "1";
     lamp.modData["need:Base.WoodDowel"] = "6";
     lamp.modData["xp:Woodwork"] = 5;
---    lamp.modData["need:Base.Torch"] = "1";
     lamp:setEastSprite(sprite.eastSprite);
     lamp:setSouthSprite(sprite.southSprite);
     lamp.fuel = "Base.Battery";
@@ -357,14 +270,14 @@ end
 ISBuildMenuDowel.buildWallMenu = function(subMenu, option, player)
     local sprite = ISBuildMenuDowel.getWoodenWallFrameSprites(player);
     local wallOption = subMenu:addOption(getText("ContextMenu_Wooden_Wall_Frame"), worldobjects, ISBuildMenuDowel.onWoodenWallFrame, sprite, player);
-    local tooltip = ISBuildMenuDowel.canBuildDowel(3, 4, 0, 0, 0, 4, wallOption, player);
+    local tooltip = ISBuildMenuDowel.canBuildDowel(3, 4, 0, 0, 0, 5, wallOption, player);
     tooltip:setName(getText("ContextMenu_Wooden_Wall_Frame"));
     tooltip.description = getText("Tooltip_craft_woodenWallFrameDesc") .. tooltip.description;
     tooltip:setTexture(sprite.sprite);
     ISBuildMenuDowel.requireHammerDowel(wallOption)
 
     local pillarOption = subMenu:addOption(getText("ContextMenu_Wooden_Pillar"), worldobjects, ISBuildMenuDowel.onWoodenPillar, player);
-    local tooltip = ISBuildMenuDowel.canBuildDowel(3, 4, 0, 0, 0, 3, pillarOption, player);
+    local tooltip = ISBuildMenuDowel.canBuildDowel(3, 4, 0, 0, 0, 4, pillarOption, player);
     tooltip:setName(getText("ContextMenu_Wooden_Pillar"));
     tooltip.description = getText("Tooltip_craft_woodenPillarDesc") .. tooltip.description;
     tooltip:setTexture("walls_exterior_wooden_01_27");
@@ -423,7 +336,7 @@ end
 ISBuildMenuDowel.buildWindowsFrameMenu = function(subMenu, player)
     local sprite = ISBuildMenuDowel.getWoodenWindowsFrameSprites(player);
     local wallOption = subMenu:addOption(getText("ContextMenu_Windows_Frame"), worldobjects, ISBuildMenuDowel.onWoodenWindowsFrame, square, sprite, player);
-    local tooltip = ISBuildMenuDowel.canBuildDowel(5, 6, 0, 0, 0, 4, wallOption, player);
+    local tooltip = ISBuildMenuDowel.canBuildDowel(5, 6, 0, 0, 0, 8, wallOption, player);
     tooltip:setName(getText("ContextMenu_Windows_Frame"));
     tooltip.description = getText("Tooltip_craft_woodenFrameDesc") .. tooltip.description;
     tooltip:setTexture(sprite.sprite);
@@ -456,7 +369,7 @@ ISBuildMenuDowel.buildFloorMenu = function(subMenu, player)
     -- simple wooden floor
     local floorSprite = ISBuildMenuDowel.getWoodenFloorSprites(player);
     local floorOption = subMenu:addOption(getText("ContextMenu_Wooden_Floor"), worldobjects, ISBuildMenuDowel.onWoodenFloor, square, floorSprite, player);
-    local tooltip = ISBuildMenuDowel.canBuildDowel(2,2,0,0,0,2,floorOption, player);
+    local tooltip = ISBuildMenuDowel.canBuildDowel(2,2,0,0,0,4,floorOption, player);
     tooltip:setName(getText("ContextMenu_Wooden_Floor"));
     tooltip.description = getText("Tooltip_craft_woodenFloorDesc") .. tooltip.description;
     tooltip:setTexture(floorSprite.sprite);
@@ -499,7 +412,7 @@ end
 ISBuildMenuDowel.buildContainerMenu = function(subMenu, player)
     local crateSprite = ISBuildMenuDowel.getWoodenCrateSprites(player);
     local crateOption = subMenu:addOption(getText("ContextMenu_Wooden_Crate"), worldobjects, ISBuildMenuDowel.onWoodenCrate, square, crateSprite, player);
-    local toolTip = ISBuildMenuDowel.canBuildDowel(4,6,0,0,0,4,crateOption, player);
+    local toolTip = ISBuildMenuDowel.canBuildDowel(4,6,0,0,0,5,crateOption, player);
     toolTip:setName(getText("ContextMenu_Wooden_Crate"));
     toolTip.description = getText("Tooltip_craft_woodenCrateDesc") .. toolTip.description;
     toolTip:setTexture(crateSprite.sprite);
@@ -569,7 +482,7 @@ ISBuildMenuDowel.buildFurnitureMenu = function(subMenu, context, option, player)
     -- now the chair
     local chairSprite = ISBuildMenuDowel.getWoodenChairSprites(player);
     local chairOption = subMenu:addOption(getText("ContextMenu_Wooden_Chair"), worldobjects, ISBuildMenuDowel.onWoodChair, square, chairSprite, player);
-    local tooltip4 = ISBuildMenuDowel.canBuildDowel(5,8,0,0,0,3,chairOption, player);
+    local tooltip4 = ISBuildMenuDowel.canBuildDowel(5,8,0,0,0,4,chairOption, player);
     tooltip4:setName(getText("ContextMenu_Wooden_Chair"));
     tooltip4.description = getText("Tooltip_craft_woodenChairDesc") .. tooltip4.description;
     tooltip4:setTexture(chairSprite.sprite);
@@ -633,7 +546,7 @@ ISBuildMenuDowel.buildFurnitureMenu = function(subMenu, context, option, player)
 
     local shelveSprite = ISBuildMenuDowel.getShelveSprite(player);
     local shelveOption = subMenu:addOption(getText("ContextMenu_Shelves"), worldobjects, ISBuildMenuDowel.onShelve, square, shelveSprite, player);
-    local tooltip6 = ISBuildMenuDowel.canBuildDowel(1,4,0,0,0,3,shelveOption, player);
+    local tooltip6 = ISBuildMenuDowel.canBuildDowel(1,4,0,0,0,4,shelveOption, player);
     tooltip6:setName(getText("ContextMenu_Shelves"));
     tooltip6.description = getText("Tooltip_craft_shelvesDesc") .. tooltip6.description;
     tooltip6:setTexture(shelveSprite.sprite);
@@ -641,7 +554,7 @@ ISBuildMenuDowel.buildFurnitureMenu = function(subMenu, context, option, player)
 
     local shelve2Sprite = ISBuildMenuDowel.getDoubleShelveSprite(player);
     local shelve2Option = subMenu:addOption(getText("ContextMenu_DoubleShelves"), worldobjects, ISBuildMenuDowel.onDoubleShelve, square, shelve2Sprite, player);
-    local tooltip8 = ISBuildMenuDowel.canBuildDowel(2,8,0,0,0,3,shelve2Option, player);
+    local tooltip8 = ISBuildMenuDowel.canBuildDowel(2,8,0,0,0,4,shelve2Option, player);
     tooltip8:setName(getText("ContextMenu_DoubleShelves"));
     tooltip8.description = getText("Tooltip_craft_doubleShelvesDesc") .. tooltip8.description;
     tooltip8:setTexture(shelve2Sprite.sprite);
@@ -650,7 +563,7 @@ ISBuildMenuDowel.buildFurnitureMenu = function(subMenu, context, option, player)
     -- bed
     local bedSprite = ISBuildMenuDowel.getBedSprite(player);
     local bedOption = subMenu:addOption(getText("ContextMenu_Bed"), worldobjects, ISBuildMenuDowel.onBed, square, bedSprite, player);
-    local tooltip9 = ISBuildMenuDowel.canBuildDowel(8,10,0,0,0,6,bedOption, player);
+    local tooltip9 = ISBuildMenuDowel.canBuildDowel(8,10,0,0,0,7,bedOption, player);
     -- we add that we need a mattress too
     if ISBuildMenuDowel.countMaterialDowel(player, "Base.Mattress") < 1 and not ISBuildMenuDowel.cheat then
         tooltip9.description = tooltip9.description .. " <RGB:1,0,0>" .. getItemText("Mattress") .. " 0/1 ";
@@ -666,7 +579,7 @@ ISBuildMenuDowel.buildFurnitureMenu = function(subMenu, context, option, player)
 
     local signSprite = ISBuildMenuDowel.getSignSprite(player);
     local signOption = subMenu:addOption(getText("ContextMenu_Sign"), worldobjects, ISBuildMenuDowel.onSign, square, signSprite, player);
-    local tooltip10 = ISBuildMenuDowel.canBuildDowel(4,6,0,0,0,2,signOption, player);
+    local tooltip10 = ISBuildMenuDowel.canBuildDowel(4,6,0,0,0,4,signOption, player);
     tooltip10:setName(getText("ContextMenu_Sign"));
     tooltip10.description = getText("Tooltip_craft_signDesc") .. tooltip10.description;
     tooltip10:setTexture(signSprite.sprite);
@@ -838,28 +751,14 @@ end
 -- **********************************************
 
 ISBuildMenuDowel.buildStairsMenu = function(subMenu, player)
---  local darkStairsOption = subMenu:addOption(getText("ContextMenu_Dark_Wooden_Stairs"), worldobjects, ISBuildMenuDowel.onDarkWoodenStairs, square, player);
---  local tooltip = ISBuildMenuDowel.canBuildDowel(8,8,0,0,0,3,darkStairsOption, player);
---  tooltip:setName(getText("ContextMenu_Dark_Wooden_Stairs"));
---  tooltip.description = getText("Tooltip_craft_stairsDesc") .. tooltip.description;
---  tooltip:setTexture("fixtures_stairs_01_16");
 
     local stairsOption = subMenu:addOption(getText("ContextMenu_Stairs"), worldobjects, ISBuildMenuDowel.onBrownWoodenStairs, square, player);
-    local tooltip2 = ISBuildMenuDowel.canBuildDowel(20,25,0,0,0,8,stairsOption, player);
+    local tooltip2 = ISBuildMenuDowel.canBuildDowel(20,25,0,0,0,9,stairsOption, player);
     tooltip2:setName(getText("ContextMenu_Stairs"));
     tooltip2.description = getText("Tooltip_craft_stairsDesc") .. tooltip2.description;
     tooltip2:setTexture("carpentry_02_88");
     ISBuildMenuDowel.requireHammerDowel(stairsOption)
 
---  local lightStairsOption = subMenu:addOption(getText("ContextMenu_Light_Brown_Wooden_Stairs"), worldobjects, ISBuildMenuDowel.onLightBrownWoodenStairs, square, player);
---  local tooltip3 = ISBuildMenuDowel.canBuildDowel(8,8,0,0,0,3,lightStairsOption, player);
---  tooltip3:setName(getText("ContextMenu_Light_Brown_Wooden_Stairs"));
---  tooltip3.description = getText("Tooltip_craft_stairsDesc") .. tooltip3.description;
---  tooltip3:setTexture("fixtures_stairs_01_32");
-
---    if darkStairsOption.notAvailable and stairsOption.notAvailable and lightStairsOption.notAvailable then
---        option.notAvailable = true;
---    end
 end
 
 ISBuildMenuDowel.onDarkWoodenStairs = function(worldobjects, square, player)
@@ -895,6 +794,7 @@ end
 -- **********************************************
 
 ISBuildMenuDowel.buildDoorMenu = function(subMenu, player)
+
     local sprite = ISBuildMenuDowel.getWoodenDoorSprites(player);
     local doorsOption = subMenu:addOption(getText("ContextMenu_Wooden_Door"), worldobjects, ISBuildMenuDowel.onWoodenDoor, square, sprite, player);
     local tooltip = ISBuildMenuDowel.canBuildDowel(4,6,2,1,0,4,doorsOption, player);
@@ -903,11 +803,6 @@ ISBuildMenuDowel.buildDoorMenu = function(subMenu, player)
     tooltip:setTexture(sprite.sprite);
     ISBuildMenuDowel.requireHammerDowel(doorsOption)
 
---~     local farmdoorsOption = subMenu:addOption("Farm Door", worldobjects, ISBuildMenuDowel.onFarmDoor, square);
---~     local tooltip2 = ISBuildMenuDowel.canBuildDowel(4,4,2,1,0,1,farmdoorsOption);
---~     tooltip2:setName("Farm Door");
---~     tooltip2.description = "A farm door, has to be placed in a door frame " .. tooltip2.description;
---~     tooltip2:setTexture("TileDoors_8");
 end
 
 ISBuildMenuDowel.onWoodenDoor = function(worldobjects, square, sprite, player)
@@ -939,7 +834,7 @@ end
 ISBuildMenuDowel.buildDoorFrameMenu = function(subMenu, player)
     local frameSprite = ISBuildMenuDowel.getWoodenDoorFrameSprites(player);
     local doorFrameOption = subMenu:addOption(getText("ContextMenu_Door_Frame"), worldobjects, ISBuildMenuDowel.onWoodenDoorFrame, square, frameSprite, player);
-    local tooltip = ISBuildMenuDowel.canBuildDowel(5,6,0,0,0,4,doorFrameOption, player);
+    local tooltip = ISBuildMenuDowel.canBuildDowel(5,6,0,0,0,8,doorFrameOption, player);
     tooltip:setName(getText("ContextMenu_Door_Frame"));
     tooltip.description = getText("Tooltip_craft_doorFrameDesc") .. tooltip.description;
     tooltip:setTexture(frameSprite.sprite);
