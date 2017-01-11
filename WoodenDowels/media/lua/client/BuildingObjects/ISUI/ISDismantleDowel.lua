@@ -14,7 +14,6 @@ ISWorldMenuElements.ContextDisassemble = function()
     retVal.disassemble = function( _data, _v )
         if _v and _v.moveProps and _v.square and _v.object then
 
-            print(" ----- USING THE NEW DISMANTLE FUNCTION ----- ");
             if _v.moveProps:canScrapObject( _data.player ) and _v.square:getObjects():contains(_v.object) then
                 if _v.moveProps:scrapWalkToAndEquip( _data.player ) then
 
